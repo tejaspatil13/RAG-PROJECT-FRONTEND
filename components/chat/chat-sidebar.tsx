@@ -1,10 +1,9 @@
 "use client"
 
 import { MessageSquare, Plus, Sparkles, Trash2, X } from "lucide-react"
-import type { Book, Conversation } from "@/lib/chat-data"
+import type { Conversation } from "@/lib/chat-data"
 import { cn } from "@/lib/utils"
 import { PdfUpload } from "./pdf-upload"
-import { BookSelector } from "./book-selector"
 
 export function ChatSidebar({
   conversations,
@@ -15,7 +14,6 @@ export function ChatSidebar({
   onNew,
   onDelete,
   onClose,
-  onSelectBook,
   onUploadPdf,
   onClearSource,
 }: {
@@ -27,7 +25,6 @@ export function ChatSidebar({
   onNew: () => void
   onDelete: (id: string) => void
   onClose: () => void
-  onSelectBook: (book: Book) => Promise<void>
   onUploadPdf: (file: File) => Promise<void>
   onClearSource: () => void
 }) {
@@ -77,15 +74,11 @@ export function ChatSidebar({
         </div>
 
         {/* Document grounding section */}
-        <div className="mt-5 px-3 space-y-4">
+        <div className="mt-5 px-3">
           <PdfUpload
             activeSource={activeSource}
             onUpload={onUploadPdf}
             onClear={onClearSource}
-          />
-          <BookSelector
-            activeSource={activeSource}
-            onSelect={onSelectBook}
           />
         </div>
 

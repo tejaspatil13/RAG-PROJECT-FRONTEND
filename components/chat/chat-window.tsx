@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { ArrowUp, Bot, X } from "lucide-react"
+import { ArrowUp, FileText, X } from "lucide-react"
 import type { Book, Message } from "@/lib/chat-data"
 import { MessageBubble } from "./message-bubble"
 import { SuggestedQuestions } from "./suggested-questions"
@@ -60,22 +60,23 @@ export function ChatWindow({
     <div className="flex min-h-0 flex-1 flex-col">
       {/* Scrollable content */}
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-3xl px-4 py-6">
+        <div className="mx-auto w-full max-w-3xl px-4 py-4">
           {/* Empty state / conversation */}
           {isEmpty ? (
-            <div className="flex flex-col items-center py-6 text-center">
-              {/* Mobile-only selectors at the top */}
-              {onSelectBook && onUploadPdf && onClearSource && (
-                <div className="w-full max-w-md space-y-4 mb-8 text-left md:hidden block">
-                  <div className="rounded-xl border border-border bg-card/50 p-4 shadow-xs">
+            <div className="flex flex-col items-center text-center">
+              {/* No source yet: show the pickers. Mobile gets upload + demo book side by side. */}
+              {!activeSource && onSelectBook && onUploadPdf && onClearSource && (
+                <div className="mb-4 grid w-full max-w-md grid-cols-2 gap-3 text-left md:hidden">
+                  <div className="rounded-xl border border-border bg-card/50 p-3 shadow-xs">
                     <PdfUpload
                       activeSource={activeSource}
                       onUpload={onUploadPdf}
                       onClear={onClearSource}
                     />
                   </div>
-                  <div className="rounded-xl border border-border bg-card/50 p-4 shadow-xs">
+                  <div className="rounded-xl border border-border bg-card/50 p-3 shadow-xs">
                     <BookSelector
+                      variant="compact"
                       activeSource={activeSource}
                       onSelect={onSelectBook}
                     />
@@ -83,47 +84,31 @@ export function ChatWindow({
                 </div>
               )}
 
-              {/* Bot Welcome / Grounding Message */}
-              <div className="flex flex-col items-center justify-center">
-                <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-2xs">
-                  <Bot className="size-7" aria-hidden="true" />
+              {/* No source yet, desktop: demo books get a showcase instead of the thin sidebar */}
+              {!activeSource && onSelectBook && (
+                <div className="mb-4 hidden w-full max-w-2xl text-left md:block">
+                  <BookSelector
+                    variant="featured"
+                    activeSource={activeSource}
+                    onSelect={onSelectBook}
+                  />
                 </div>
-                <h2 className="mt-6 text-xl font-bold tracking-tight text-foreground text-balance">
-                  {activeSource
-                    ? `Grounding on ${activeSource}`
-                    : "Welcome to DocuMind"}
-                </h2>
-                <p className="mt-2 max-w-md text-sm text-muted-foreground/90 leading-relaxed text-pretty">
-                  {activeSource ? (
-                    "Ask any question below. The chatbot will retrieve context and answer grounded strictly in the book."
-                  ) : (
-                    <>
-                      <span className="hidden md:inline">
-                        To begin, select a demo book or upload a PDF from the sidebar.
-                      </span>
-                      <span className="inline md:hidden">
-                        To begin, select a demo book or upload a PDF above.
-                      </span>{" "}
-                      Once selected, suggested questions will appear here.
-                    </>
-                  )}
-                </p>
-              </div>
+              )}
 
-              {/* Mobile-only Grounding Badge when source is selected */}
+              {/* Source active: a single compact chip instead of the full picker */}
               {activeSource && onClearSource && (
-                <div className="mt-6 block md:hidden w-full max-w-xs">
+                <div className="mb-4 w-full max-w-md">
                   <div className="flex items-center justify-between gap-2.5 rounded-xl border border-primary/20 bg-primary/5 p-3 shadow-2xs text-left">
                     <div className="flex min-w-0 items-center gap-2.5">
                       <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <Bot className="size-4" aria-hidden="true" />
+                        <FileText className="size-4" aria-hidden="true" />
                       </div>
                       <div className="min-w-0">
                         <p className="truncate text-xs font-semibold text-foreground">
                           {activeSource}
                         </p>
                         <p className="text-[10px] text-muted-foreground/80 font-medium">
-                          Active Grounding Source
+                          Grounded — ask away below
                         </p>
                       </div>
                     </div>
@@ -141,8 +126,9 @@ export function ChatWindow({
 
               {/* Suggested Questions */}
               {activeSource && (
-                <div className="mt-8 w-full text-left">
+                <div className="w-full text-left">
                   <SuggestedQuestions
+                    variant="compact"
                     activeSource={activeSource}
                     onPick={(q) => submit(q)}
                     disabled={isTyping}
@@ -165,8 +151,9 @@ export function ChatWindow({
       <div className="border-t border-border bg-background px-4 py-3">
         <div className="mx-auto w-full max-w-3xl">
           {!isEmpty && (
-            <div className="mb-3">
+            <div className="mb-2.5">
               <SuggestedQuestions
+                variant="compact"
                 activeSource={activeSource}
                 onPick={(q) => submit(q)}
                 disabled={isTyping}

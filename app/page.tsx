@@ -166,7 +166,6 @@ export default function Page() {
         onNew={handleNewChat}
         onDelete={handleDelete}
         onClose={() => setSidebarOpen(false)}
-        onSelectBook={handleSelectBook}
         onUploadPdf={handleUploadPdf}
         onClearSource={handleClearSource}
       />
