@@ -178,6 +178,7 @@ export default function Page() {
           isDark={isDark}
           onToggleTheme={() => setIsDark((d) => !d)}
           onToggleSidebar={() => setSidebarOpen((o) => !o)}
+          onClearSource={handleClearSource}
         />
 
         {active && (
@@ -186,6 +187,9 @@ export default function Page() {
             isTyping={isTyping}
             activeSource={active.source}
             onSend={handleSend}
+            onSelectBook={handleSelectBook}
+            onUploadPdf={handleUploadPdf}
+            onClearSource={handleClearSource}
           />
         )}
       </div>
